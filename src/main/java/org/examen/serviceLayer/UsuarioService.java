@@ -42,7 +42,7 @@ public class UsuarioService implements IService<Usuario>{
 
     @Override
     public Usuario leerPorId(int id){
-        String ident = Integer.toString(id);
+       String ident = Integer.toString(id);
         return fileStore.readAll().stream().filter(a ->a.getId().equals(ident) ).findFirst().orElse(null);
     }
 

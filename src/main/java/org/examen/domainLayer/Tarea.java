@@ -10,12 +10,10 @@ public class Tarea {
 
     @XmlElement(name ="numero")
     private int numero;
-    @XmlElement(name="proyecto")
-    private int proyecto;
-    @XmlElement(name ="fechaFinalizacion")
-    private Date fechaFinalizacion;
     @XmlElement(name ="descripcion")
     private String descripcion;
+    @XmlElement(name ="fechaFinalizacion")
+    private Date fechaFinalizacion;
     @XmlElement(name ="prioridad")
     private String prioridad;
     @XmlElement(name ="estado")
@@ -23,9 +21,8 @@ public class Tarea {
     @XmlElement(name ="encargado")
     private String encargado;
 
-    public Tarea(int numero, int proyecto, String descripcion, Date fechaFinalizacion, String prioridad, String estado, String encargado) {
+    public Tarea(int numero, String descripcion, Date fechaFinalizacion, String prioridad, String estado, String encargado) {
         this.numero = numero;
-        this.proyecto= proyecto;
         this.descripcion = descripcion;
         this.fechaFinalizacion = fechaFinalizacion;
         this.prioridad = prioridad;
@@ -39,8 +36,6 @@ public class Tarea {
     public int getNumero() {
         return numero;
     }
-
-    public int getProyecto() {return proyecto;}
 
     public String getDescripcion() {
         return descripcion;
@@ -65,8 +60,6 @@ public class Tarea {
     public void setNumero(int numero) {
         this.numero = numero;
     }
-
-    public void setProyecto(int proyecto) {this.proyecto = proyecto;}
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;

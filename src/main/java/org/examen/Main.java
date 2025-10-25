@@ -22,7 +22,7 @@ public class Main {
 //        }
 
 
-        IService<Usuario> usuarioService = new UsuarioService(FileManagement.getUsuarioFileStore("usuarios.xml"));
+         IService<Usuario> usuarioService = new UsuarioService(FileManagement.getUsuarioFileStore("usuarios.xml"));
         IService<Proyecto> proyectoService = new ProyectoService(FileManagement.getProyectoFileStore("proyectos.xml"));
         IService<Tarea> tareaService = new TareaService(FileManagement.getTareaFileStore("tareas.xml"));
         ProyectoController proyectoController = new ProyectoController(proyectoService);
@@ -34,7 +34,7 @@ public class Main {
         tareaService.addObserver(tareaTableModel);
         List<Proyecto> proyectos = proyectoService.leerTodos();
         List<Tarea> tareas = tareaService.leerTodos();
-        MainView ventana = new MainView(proyectoTableModel,proyectoController,proyectos,tareaController, tareaTableModel, tareas);
+        MainView ventana = new MainView(proyectoTableModel,proyectoController,proyectos,tareaController);
 
         ventana.getContentPanel();
         ventana.setVisible(true);

@@ -17,26 +17,14 @@ public class TareaController {
 
     public void agregar(int numero, String descripcion, Date fechaFinalizacion, String prioridad, String estado, String encargado){
         // if (validar(numeroPrescripcion, codigo, nombre, presentacion, cantidad, duracion, indicaciones)){
-        int proyecto = numeroTarea(numero)+1;
-        Tarea receta = new Tarea(numero, proyecto, descripcion, fechaFinalizacion, prioridad, estado, encargado);
+        Tarea receta = new Tarea(numero, descripcion, fechaFinalizacion, prioridad, estado, encargado);
         service.agregar(receta);
         // }
     }
 
-    public int numeroTarea(int numero){
-        List<Tarea> tareas= service.leerTodos();
-        int mayor=0;
-        for (Tarea rec : tareas){
-            if (rec.getProyecto()== numero){
-                mayor++;
-            }
-        }
-        return mayor;
-    }
-
-    public void actualizar(int numero, int proyecto, String descripcion, Date fechaFinalizacion, String prioridad, String estado, String encargado){
+    public void actualizar(int numero, String descripcion, Date fechaFinalizacion, String prioridad, String estado, String encargado){
         if (validar(numero, descripcion, fechaFinalizacion, prioridad, estado, encargado)){
-            Tarea receta = new Tarea(numero, proyecto, descripcion, fechaFinalizacion, prioridad, estado, encargado);
+            Tarea receta = new Tarea(numero, descripcion, fechaFinalizacion, prioridad, estado, encargado);
             service.actualizar(receta);
         }
     }
@@ -49,15 +37,15 @@ public class TareaController {
 
     public List<Tarea> leerTodos(){return service.leerTodos();}
 
-    public List<Tarea> leePorNumero(int proyecto){
-        List<Tarea> tareas= service.leerTodos();
-        List<Tarea> tareasFiltradas= new ArrayList<>();
-        for (Tarea rec : tareas){
-            if (rec.getNumero() == proyecto){
-                tareasFiltradas.add(rec);
+    public List<Tarea> leePorNumero(int numeroPrescripcion){
+        List<Tarea> recetaMedicas= service.leerTodos();
+        List<Tarea> recetasFiltradas= new ArrayList<>();
+        for (Tarea rec : recetaMedicas){
+            if (rec.getNumero() == numeroPrescripcion){
+                recetasFiltradas.add(rec);
             }
         }
-        return tareasFiltradas;
+        return recetasFiltradas;
     }
 
     public Tarea leerPorCodigo(String codigo){
@@ -86,6 +74,5 @@ public class TareaController {
         return s == null || s.isEmpty();
     }
 }
-
 
 
