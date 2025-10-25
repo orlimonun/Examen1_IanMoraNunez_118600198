@@ -64,4 +64,3 @@ public class Proyecto {
         this.numProyecto = numProyecto;
     }
 }
-

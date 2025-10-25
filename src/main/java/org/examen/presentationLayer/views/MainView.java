@@ -56,7 +56,7 @@ public class MainView extends JFrame {
 
 
     public MainView(ProyectoTableModel proyectoTableModel , ProyectoController proyectoController,
-                    List<Proyecto> proyectos, TareaController tareaController)
+                    List<Proyecto> proyectos, TareaController tareaController, TareaTableModel tareaTableModel, List<Tarea> tareas)
     {
         setTitle("Sistema Medico");
         setContentPane(MainPanel);
@@ -66,8 +66,11 @@ public class MainView extends JFrame {
         this.proyectoController = proyectoController;
         this.proyectoTableModel = proyectoTableModel;
         this.tareaController = tareaController;
-        bind(proyectoTableModel,proyectoController, proyectos);
-        tablaTareas.setModel(tareaTableModel);
+        this.tareaTableModel = tareaTableModel;
+        bind(proyectoTableModel,proyectoController, tareaController, tareaTableModel, proyectos, tareas);
+        tablaTareas.setVisible(false);
+        formTareaPanel.setVisible(false);
+        //tablaTareas.setModel(tareaTableModel);
         addListeners();
         //anniadir todos los inits de los comboBox
         initResponsableSelector();
@@ -90,18 +93,31 @@ public class MainView extends JFrame {
         });
     }
 
-    public void bind(ProyectoTableModel model, ProyectoController proyectoController,List<Proyecto> prescripciones){
+    public void bind(ProyectoTableModel model, ProyectoController proyectoController, TareaController tareaController, TareaTableModel tareaTableModel, List<Proyecto> listaProyectos, List<Tarea> listaTareas) {
         this.proyectoController = proyectoController;
         proyectoTableModel = model;
         tablaProyectos.setModel(model);
-        if (prescripciones != null) model.setRows(prescripciones);
-        if (prescripciones != null && !prescripciones.isEmpty()) {
-            Proyecto p = prescripciones.get(0);
-            tareaTableModel.setRows(p.getListaTareas());
-        }
+//        if (prescripciones != null) model.setRows(prescripciones);
+//        if (prescripciones != null && !prescripciones.isEmpty()) {
+//            Proyecto p = prescripciones.get(0);
+//            tareaTableModel.setRows(p.getListaTareas());
+//        }
 
+        this.tareaController=tareaController;
+        this.tareaTableModel=tareaTableModel;
+        tablaTareas.setModel(tareaTableModel);
+
+        if(listaProyectos!=null){this.proyectoTableModel.setRows(listaProyectos);}
+        if (listaTareas!=null){this.tareaTableModel.setRows(listaTareas);}
         descripcionTextField.requestFocus();
 
+
+    }
+
+    public void getTareas(int proyecto){
+        List<Tarea> tareas = tareaController.leePorNumero(proyecto);
+        tareaTableModel.setRows(tareas);
+        tareaTableModel.fireTableDataChanged();
     }
 
     public JPanel getContentPanel() {
@@ -179,7 +195,7 @@ public class MainView extends JFrame {
     }
 
     private void onTableSelection(ListSelectionEvent e) {
-       // if (e.getValueIsAdjusting()) return;
+        // if (e.getValueIsAdjusting()) return;
         if (proyectoTableModel == null) return;
         int row = tablaProyectos.getSelectedRow();
         if (row < 0){
@@ -192,13 +208,9 @@ public class MainView extends JFrame {
             tareaTableModel.setRows(new ArrayList<>());
             return;
         }
-
-        descripcionTextField.setText(p.getDescripcion());
-
-        List<Tarea> tareas = p.getListaTareas();
-        if (tareas == null) tareas = new ArrayList<>();
-
-        tareaTableModel.setRows(tareas);
+        tablaTareas.setVisible(true);
+        formTareaPanel.setVisible(true);
+        getTareas(p.getNumProyecto());
     }
 
     private void onTableSelectionTarea(ListSelectionEvent e) {
@@ -281,41 +293,14 @@ public class MainView extends JFrame {
         }
     }
     private void onAgregarTarea(){
-
         int selectedRow = tablaProyectos.getSelectedRow();
         if (selectedRow < 0) {
             warn("Debe seleccionar un proyecto primero.");
             return;
         }
 
-        Proyecto proyectoSeleccionado = proyectoTableModel.getAt(selectedRow);
-
-        String responsable  = (String) responsableComboBox.getSelectedItem();
-        String descripcion = descripcionTareatextField.getText();
-        String estado = (String) estadoComboBox.getSelectedItem();
-        String prioridad = (String) prioridadComboBox.getSelectedItem();
-        Date fechaVencimiento = dateChooser.getDate();
-
-        if (descripcion.isBlank() || responsable == null || prioridad == null || estado == null) {
-            warn("Debe completar todos los campos para crear una tarea.");
-            return;
-        }
-
-        Tarea rec = new Tarea(0, descripcion, fechaVencimiento, prioridad, estado, responsable);
-
-        tareaController.agregar(0, descripcion, fechaVencimiento, prioridad, estado, responsable);
-
-        List<Tarea> nuevas = proyectoSeleccionado.getListaTareas();
-        if(nuevas == null) nuevas = new ArrayList<>();
-        nuevas.add(rec);
-        proyectoSeleccionado.setListaTareas(nuevas);
-
-        proyectoController.actualizar(proyectoSeleccionado.getDescripcion(),
-                proyectoSeleccionado.getEncargadoGeneral(),
-                proyectoSeleccionado.getNumProyecto());
-
-        tareaTableModel.setRows(nuevas);
-
+        Proyecto pro = proyectoTableModel.getAt(selectedRow);
+        tareaController.agregar(pro.getNumProyecto(), descripcionTareatextField.getText(), dateChooser.getDate(), (String) prioridadComboBox.getSelectedItem(), (String) estadoComboBox.getSelectedItem(), (String) responsableComboBox.getSelectedItem());
         onClear();
 
     }
@@ -418,7 +403,7 @@ public class MainView extends JFrame {
             tareaSeleccionada.setEstado(nuevoEstado);
 
             if (tareaController != null) {
-                tareaController.actualizar(tareaSeleccionada.getNumero(), tareaSeleccionada.getDescripcion(), tareaSeleccionada.getFechaFinalizacion(),tareaSeleccionada.getPrioridad(),tareaSeleccionada.getEstado(),tareaSeleccionada.getEncargado());
+                tareaController.actualizar(tareaSeleccionada.getNumero(), tareaSeleccionada.getProyecto(), tareaSeleccionada.getDescripcion(), tareaSeleccionada.getFechaFinalizacion(),tareaSeleccionada.getPrioridad(),tareaSeleccionada.getEstado(),tareaSeleccionada.getEncargado());
             }
 
             dialog.dispose();
@@ -443,3 +428,4 @@ public class MainView extends JFrame {
     }
 
 }
+

@@ -6,3 +6,4 @@ public interface IFileStore<T> {
     List<T> readAll();
     void writeAll(List<T> data);
 }
+

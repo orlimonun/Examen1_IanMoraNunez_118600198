@@ -103,4 +103,3 @@ public class UsuarioFileStore implements IFileStore<Usuario> {
         return out;
     }
 }
-

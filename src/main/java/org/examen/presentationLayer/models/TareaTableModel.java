@@ -16,7 +16,7 @@ public class TareaTableModel extends AbstractTableModel implements IServiceObser
     private final List<Tarea> rows = new ArrayList<>();
 
     public void setRows(List<Tarea> data) {
-       this.rows.clear();
+        this.rows.clear();
         if (data != null) rows.addAll(data);
         fireTableDataChanged();
     }

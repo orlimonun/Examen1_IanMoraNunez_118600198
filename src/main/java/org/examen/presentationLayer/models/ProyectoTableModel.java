@@ -82,3 +82,4 @@ public class ProyectoTableModel extends AbstractTableModel implements IServiceOb
     public List<Proyecto> getRows() { return new ArrayList<>(rows); }
 }
 
+
